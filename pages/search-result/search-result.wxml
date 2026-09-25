@@ -1,0 +1,14 @@
+<view class="page">
+  <view class="result-grid">
+    <view class="car-card" wx:for="{{results}}" wx:key="id" bindtap="onCarTap" data-id="{{item.id}}">
+      <image class="car-image" src="{{item.image}}" mode="aspectFill"></image>
+      <view class="car-title">{{item.title}}</view>
+      <view class="car-meta">{{item.year}}年 / {{item.mileage}} / {{item.city}}</view>
+      <view class="car-price">{{item.price}} 万</view>
+    </view>
+  </view>
+
+  <view class="empty" wx:if="{{results.length === 0}}">
+    <text>暂无搜索结果</text>
+  </view>
+</view>

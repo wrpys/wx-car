@@ -1,0 +1,80 @@
+<view class="page">
+  <swiper class="image-swiper" bindchange="onImageChange">
+    <swiper-item wx:for="{{car.images}}" wx:key="*this">
+      <image class="car-image" src="{{item}}" mode="aspectFill"></image>
+    </swiper-item>
+  </swiper>
+
+  <view class="image-actions">
+    <view class="download-btn" bindtap="onDownloadImages">一键下载图片</view>
+    <view class="image-counter">{{currentImage + 1}} / {{totalImages}}</view>
+  </view>
+
+  <view class="price-bar">
+    <view class="price">
+      <text>市场价:</text>
+      <text class="price-value">{{car.price}}</text>
+      <text>万</text>
+    </view>
+    <view class="car-id">车源编号：{{car.id}}</view>
+  </view>
+
+  <view class="card">
+    <view class="title">{{car.title}}</view>
+    <view class="tags">
+      <text class="tag tag-warning" wx:if="{{car.tags.indexOf('出险记录') > -1}}">出险记录</text>
+      <text class="tag tag-info">{{car.fuel}}</text>
+      <text class="tag" wx:for="{{car.tags}}" wx:for-item="tag" wx:key="*this" wx:if="{{tag !== '出险记录'}}">{{tag}}</text>
+    </view>
+    <view class="publish-time">发布：{{car.publishTime}}</view>
+  </view>
+
+  <view class="card">
+    <view class="card-title">车辆信息</view>
+    <view class="highlight-info">
+      <view class="info-item">
+        <view class="info-value">{{car.year}}-{{car.month}}</view>
+        <view class="info-label">上牌时间</view>
+      </view>
+      <view class="info-item">
+        <view class="info-value">{{car.mileage}}</view>
+        <view class="info-label">表显里程</view>
+      </view>
+      <view class="info-item">
+        <view class="info-value">{{car.color}}</view>
+        <view class="info-label">外观颜色</view>
+      </view>
+    </view>
+    <view class="info-grid">
+      <view class="grid-item">
+        <view class="label">排量</view>
+        <view class="value">{{car.displacement}}</view>
+      </view>
+      <view class="grid-item">
+        <view class="label">变速箱</view>
+        <view class="value">{{car.transmission}}</view>
+      </view>
+      <view class="grid-item">
+        <view class="label">排量标准</view>
+        <view class="value">{{car.emissionStandard}}</view>
+      </view>
+      <view class="grid-item">
+        <view class="label">厂家类型</view>
+        <view class="value">{{car.manufacturer}}</view>
+      </view>
+      <view class="grid-item">
+        <view class="label">车辆类型</view>
+        <view class="value">{{car.vehicleType}}</view>
+      </view>
+      <view class="grid-item">
+        <view class="label">能源类型</view>
+        <view class="value">{{car.energyType}}</view>
+      </view>
+    </view>
+    <view class="more-btn" bindtap="onMoreParams">查看更多参数</view>
+  </view>
+
+  <view class="bottom-bar">
+    <view class="call-btn" bindtap="onCall">电话联系</view>
+  </view>
+</view>

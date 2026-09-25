@@ -1,0 +1,28 @@
+<view class="page">
+  <view class="search-header">
+    <input 
+      class="search-input" 
+      placeholder="请输入关键字"
+      value="{{keyword}}"
+      bindinput="onInput"
+      bindconfirm="onSearch"
+    />
+    <view class="search-btn" bindtap="onSearch">搜索</view>
+  </view>
+
+  <view class="history-section" wx:if="{{history.length > 0}}">
+    <view class="history-header">
+      <text class="history-title">历史记录</text>
+      <text class="clear-btn" bindtap="onClearHistory">🗑</text>
+    </view>
+    <view class="history-list">
+      <view class="history-item" wx:for="{{history}}" wx:key="*this" bindtap="onHistoryTap" data-keyword="{{item}}">
+        {{item}}
+      </view>
+    </view>
+  </view>
+
+  <view class="empty" wx:else>
+    <text>暂无历史记录</text>
+  </view>
+</view>
