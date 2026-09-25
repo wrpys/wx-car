@@ -11,32 +11,20 @@
   ],
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#FFD100",
+    "navigationBarBackgroundColor": "#FFB800",
     "navigationBarTitleText": "二手车",
     "navigationBarTextStyle": "black"
   },
   "tabBar": {
-    "color": "#999999",
-    "selectedColor": "#FFD100",
+    "color": "#9AA0A6",
+    "selectedColor": "#FFB800",
     "backgroundColor": "#ffffff",
-    "borderStyle": "black",
+    "borderStyle": "white",
     "list": [
-      {
-        "pagePath": "pages/index/index",
-        "text": "首页"
-      },
-      {
-        "pagePath": "pages/wholesale/wholesale",
-        "text": "批发车"
-      },
-      {
-        "pagePath": "pages/service/service",
-        "text": "服务"
-      },
-      {
-        "pagePath": "pages/mine/mine",
-        "text": "我的"
-      }
+      { "pagePath": "pages/index/index", "text": "首页", "iconPath": "assets/tabbar/home.png", "selectedIconPath": "assets/tabbar/home_active.png" },
+      { "pagePath": "pages/wholesale/wholesale", "text": "批发车", "iconPath": "assets/tabbar/wholesale.png", "selectedIconPath": "assets/tabbar/wholesale_active.png" },
+      { "pagePath": "pages/service/service", "text": "服务", "iconPath": "assets/tabbar/service.png", "selectedIconPath": "assets/tabbar/service_active.png" },
+      { "pagePath": "pages/mine/mine", "text": "我的", "iconPath": "assets/tabbar/mine.png", "selectedIconPath": "assets/tabbar/mine_active.png" }
     ]
   },
   "sitemapLocation": "sitemap.json"

@@ -1,73 +1,95 @@
 .page {
   min-height: 100vh;
-  background-color: #f5f5f5;
 }
 
-.search-header {
+.search-head {
   display: flex;
   align-items: center;
-  background-color: #FFD100;
   padding: 20rpx 24rpx;
+  background: #fff;
 }
-
-.search-input {
+.s-input-wrap {
   flex: 1;
-  background-color: #fff;
-  padding: 20rpx 24rpx;
-  border-radius: 8rpx;
-  font-size: 28rpx;
-}
-
-.search-btn {
-  background-color: #fff;
-  color: #333;
-  padding: 20rpx 32rpx;
-  margin-left: 16rpx;
-  border-radius: 8rpx;
-  font-size: 28rpx;
-}
-
-.history-section {
-  background-color: #fff;
-  margin: 20rpx;
-  border-radius: 16rpx;
-  padding: 24rpx;
-}
-
-.history-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 20rpx;
+  background: #F2F3F5;
+  border-radius: var(--r-pill);
+  padding: 14rpx 24rpx;
 }
-
-.history-title {
+.s-input {
+  flex: 1;
+  min-width: 0;
+  margin-left: 12rpx;
   font-size: 28rpx;
-  font-weight: 500;
+}
+.ph {
+  color: var(--text-3);
+}
+.s-btn {
+  margin-left: 20rpx;
+  color: var(--primary-dark);
+  font-size: 30rpx;
+  font-weight: 600;
 }
 
-.clear-btn {
-  font-size: 32rpx;
+.block {
+  background: #fff;
+  margin-top: 20rpx;
+  padding: 28rpx 24rpx;
 }
-
-.history-list {
+.block-head {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+}
+.block-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--text-1);
 }
 
-.history-item {
-  padding: 20rpx 0;
-  border-bottom: 1rpx solid #f0f0f0;
-  font-size: 26rpx;
-  color: #333;
+.chips {
+  white-space: nowrap;
 }
-
-.history-item:last-child {
-  border-bottom: none;
+.chip {
+  display: inline-block;
+  background: #F2F3F5;
+  color: var(--text-2);
+  font-size: 24rpx;
+  padding: 14rpx 28rpx;
+  border-radius: var(--r-pill);
+  margin-right: 16rpx;
 }
 
 .empty {
-  text-align: center;
-  padding: 100rpx 0;
-  color: #999;
+  font-size: 24rpx;
+  color: var(--text-3);
+  padding: 16rpx 0;
+}
+
+.hot-grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+.hot-item {
+  width: 50%;
+  display: flex;
+  align-items: center;
+  padding: 16rpx 0;
+}
+.hot-rank {
+  width: 36rpx;
+  font-size: 26rpx;
+  font-weight: 700;
+  font-style: italic;
+}
+.hot-word {
+  flex: 1;
+  font-size: 26rpx;
+  color: var(--text-1);
+}
+.hot-heat {
+  font-size: 22rpx;
+  color: var(--text-3);
 }

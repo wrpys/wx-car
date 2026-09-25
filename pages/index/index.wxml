@@ -1,58 +1,71 @@
 <view class="page">
-  <view class="search-bar">
-    <view class="location" bindtap="onCityChange">
-      <text class="icon-search">🔍</text>
-      <text class="city-name">{{city}}</text>
-      <text class="arrow">▼</text>
+  <!-- 搜索卡 -->
+  <view class="search-card">
+    <view class="location" bindtap="onCityTap">
+      <view class="ic ic-location-p"></view>
+      <text class="city">{{city}}</text>
+      <view class="ic ic-down" style="width:20rpx;height:20rpx;"></view>
     </view>
-    <text class="divider">|</text>
-    <input 
-      class="search-input" 
-      placeholder="搜索您要的车源" 
-      value="{{searchKeyword}}"
-      bindinput="onSearchInput"
+    <view class="divider"></view>
+    <input
+      class="search-input"
+      placeholder="搜索品牌、车型或关键词"
+      placeholder-class="ph"
+      value="{{keyword}}"
+      bindinput="onInput"
       bindconfirm="onSearch"
     />
     <view class="search-btn" bindtap="onSearch">搜索</view>
   </view>
 
+  <!-- 筛选栏 -->
   <view class="filter-bar">
-    <view class="filter-item" bindtap="onFilterTap" data-type="排序">
-      <text>默认排序</text>
-      <text class="arrow">⇅</text>
-    </view>
-    <view class="filter-item" bindtap="onFilterTap" data-type="品牌">
-      <text>品牌</text>
-      <text class="arrow">▼</text>
-    </view>
-    <view class="filter-item" bindtap="onFilterTap" data-type="价格">
-      <text>价格</text>
-      <text class="arrow">▼</text>
-    </view>
-    <view class="filter-item" bindtap="onFilterTap" data-type="筛选">
-      <text>筛选</text>
-      <text class="filter-icon">▤</text>
+    <view
+      class="filter-item {{activeFilter === index ? 'active' : ''}}"
+      wx:for="{{filters}}"
+      wx:key="*this"
+      data-index="{{index}}"
+      bindtap="onFilterTap"
+    >
+      <text>{{item}}</text>
+      <view class="ic ic-down" style="width:18rpx;height:18rpx;"></view>
     </view>
   </view>
 
+  <!-- 车源列表 -->
   <view class="car-list">
-    <view class="car-card" wx:for="{{cars}}" wx:key="id" bindtap="onCarTap" data-id="{{item.id}}">
-      <view class="car-image-wrap">
-        <image class="car-image" src="{{item.image}}" mode="aspectFill"></image>
-        <view class="urgent-tag" wx:if="{{item.isUrgent}}">急卖</view>
-        <view class="car-id-badge">{{item.id}}</view>
+    <view
+      class="car-card"
+      wx:for="{{list}}"
+      wx:key="id"
+      bindtap="onCarTap"
+      data-id="{{item.id}}"
+    >
+      <view class="cover">
+        <image class="cover-img" src="{{item.cover}}" mode="aspectFill" lazy-load="true"></image>
+        <view class="badge-urgent" wx:if="{{item.urgent}}">急卖</view>
+        <view class="badge-new" wx:if="{{item.isNew}}">新上架</view>
       </view>
-      <view class="car-info">
-        <view class="car-title">{{item.title}}</view>
-        <view class="car-meta">{{item.year}}年 / {{item.mileage}} / {{item.city}}</view>
-        <view class="car-tags">
+      <view class="info">
+        <view class="title">{{item.title}}</view>
+        <view class="meta">{{item.year}}年 · {{item.mileage}}万公里 · {{item.city}}</view>
+        <view class="tags">
           <text class="tag tag-fuel">{{item.fuel}}</text>
-          <text class="tag" wx:for="{{item.tags}}" wx:for-item="tag" wx:key="*this">{{tag}}</text>
+          <text class="tag {{t.cls}}" wx:for="{{item.tagList}}" wx:for-item="t" wx:key="text">{{t.text}}</text>
         </view>
-        <view class="car-price">市场价{{item.price}}万</view>
+        <view class="price-row">
+          <text class="price-num">{{item.price}}</text>
+          <text class="price-unit">万</text>
+          <text class="price-old" wx:if="{{item.originalPrice}}">新车指导 ¥{{item.originalPrice}}万</text>
+        </view>
       </view>
     </view>
   </view>
 
-  <view class="fab" bindtap="onPublish">+</view>
+  <view class="list-end">已经到底啦 ~</view>
+
+  <!-- 悬浮发布 -->
+  <view class="fab" bindtap="onPublish">
+    <view class="ic ic-plus" style="width:44rpx;height:44rpx;"></view>
+  </view>
 </view>

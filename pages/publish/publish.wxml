@@ -1,6 +1,85 @@
 <view class="page">
-  <view class="placeholder">
-    <text class="placeholder-text">发布车源页面</text>
-    <text class="placeholder-desc">功能开发中...</text>
+  <view class="form card">
+    <view class="field">
+      <text class="label">车辆标题</text>
+      <input class="input" placeholder="如：丰田 汉兰达 2018款 2.0T" placeholder-class="ph"
+             data-field="title" value="{{form.title}}" bindinput="onField" />
+    </view>
+
+    <view class="field">
+      <text class="label">品牌</text>
+      <picker class="picker" range="{{options.brands}}" value="{{form.brandIndex}}" data-field="brandIndex" bindchange="onPicker">
+        <view class="picker-text {{form.brandIndex === null ? 'ph' : ''}}">
+          {{form.brandIndex === null ? '请选择品牌' : options.brands[form.brandIndex]}}
+          <view class="ic ic-right" style="width:26rpx;height:26rpx;"></view>
+        </view>
+      </picker>
+    </view>
+
+    <view class="field">
+      <text class="label">上牌年份</text>
+      <input class="input" type="number" placeholder="如 2018" placeholder-class="ph"
+             data-field="year" value="{{form.year}}" bindinput="onField" />
+    </view>
+
+    <view class="field">
+      <text class="label">表显里程</text>
+      <view class="input-inline">
+        <input class="input" type="digit" placeholder="如 6.8" placeholder-class="ph"
+               data-field="mileage" value="{{form.mileage}}" bindinput="onField" />
+        <text class="suffix">万公里</text>
+      </view>
+    </view>
+
+    <view class="field">
+      <text class="label">燃料类型</text>
+      <picker class="picker" range="{{options.fuelTypes}}" value="{{form.fuelIndex}}" data-field="fuelIndex" bindchange="onPicker">
+        <view class="picker-text {{form.fuelIndex === null ? 'ph' : ''}}">
+          {{form.fuelIndex === null ? '请选择燃料' : options.fuelTypes[form.fuelIndex]}}
+          <view class="ic ic-right" style="width:26rpx;height:26rpx;"></view>
+        </view>
+      </picker>
+    </view>
+
+    <view class="field">
+      <text class="label">所在地</text>
+      <picker class="picker" range="{{options.citys}}" value="{{form.cityIndex}}" data-field="cityIndex" bindchange="onPicker">
+        <view class="picker-text {{form.cityIndex === null ? 'ph' : ''}}">
+          {{form.cityIndex === null ? '请选择城市' : options.citys[form.cityIndex]}}
+          <view class="ic ic-right" style="width:26rpx;height:26rpx;"></view>
+        </view>
+      </picker>
+    </view>
+
+    <view class="field">
+      <text class="label">期望售价</text>
+      <view class="input-inline">
+        <input class="input" type="digit" placeholder="如 13.8" placeholder-class="ph"
+               data-field="price" value="{{form.price}}" bindinput="onField" />
+        <text class="suffix">万元</text>
+      </view>
+    </view>
+
+    <view class="field column">
+      <text class="label">车况描述</text>
+      <textarea class="textarea" placeholder="补充车辆亮点、过户次数、保养情况等" placeholder-class="ph"
+                data-field="desc" value="{{form.desc}}" bindinput="onField" maxlength="200" />
+    </view>
+
+    <view class="field column">
+      <text class="label">车辆图片</text>
+      <view class="img-grid">
+        <view class="img-item" wx:for="{{images}}" wx:key="*this">
+          <image class="img-thumb" src="{{item}}" mode="aspectFill"></image>
+          <view class="img-del" data-index="{{index}}" bindtap="onRemove">×</view>
+        </view>
+        <view class="img-add" bindtap="onAddImage" wx:if="{{images.length < 6}}">
+          <view class="ic ic-camera-w" style="width:48rpx;height:48rpx;"></view>
+          <text class="img-add-text">{{images.length}}/6</text>
+        </view>
+      </view>
+    </view>
   </view>
+
+  <view class="submit" bindtap="onSubmit">提交发布</view>
 </view>

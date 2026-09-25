@@ -1,6 +1,40 @@
 <view class="page">
-  <view class="placeholder">
-    <text class="placeholder-text">服务页面</text>
-    <text class="placeholder-desc">功能开发中...</text>
+  <!-- 顶部保障条 -->
+  <view class="hero">
+    <view class="hero-title">售后无忧 · 全程守护</view>
+    <view class="hero-sub">从看车到过户，专业团队为您保驾护航</view>
+    <view class="guarantees">
+      <view class="g-item" wx:for="{{guarantees}}" wx:key="text">
+        <view class="ic ic-check" style="width:26rpx;height:26rpx;"></view>
+        <text>{{item.text}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 服务网格 -->
+  <view class="section-title">为您提供的服务</view>
+  <view class="svc-grid">
+    <view
+      class="svc-card"
+      wx:for="{{services}}"
+      wx:key="key"
+      data-name="{{item.name}}"
+      bindtap="onServiceTap"
+    >
+      <view class="svc-ic" style="background:{{item.color}};">
+        <view class="ic ic-svc-{{item.key}}" style="width:44rpx;height:44rpx;"></view>
+      </view>
+      <view class="svc-name">{{item.name}}</view>
+      <view class="svc-desc">{{item.desc}}</view>
+    </view>
+  </view>
+
+  <!-- 流程 -->
+  <view class="section-title">交易流程</view>
+  <view class="steps">
+    <view class="step" wx:for="{{['在线选车','预约看车','签约付款','过户交付']}}" wx:key="*this">
+      <view class="step-num">{{index + 1}}</view>
+      <view class="step-text">{{item}}</view>
+    </view>
   </view>
 </view>

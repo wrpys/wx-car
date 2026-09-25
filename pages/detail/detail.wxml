@@ -1,80 +1,111 @@
-<view class="page">
-  <swiper class="image-swiper" bindchange="onImageChange">
-    <swiper-item wx:for="{{car.images}}" wx:key="*this">
-      <image class="car-image" src="{{item}}" mode="aspectFill"></image>
-    </swiper-item>
-  </swiper>
-
-  <view class="image-actions">
-    <view class="download-btn" bindtap="onDownloadImages">一键下载图片</view>
-    <view class="image-counter">{{currentImage + 1}} / {{totalImages}}</view>
-  </view>
-
-  <view class="price-bar">
-    <view class="price">
-      <text>市场价:</text>
-      <text class="price-value">{{car.price}}</text>
-      <text>万</text>
+<view class="page" wx:if="{{car}}">
+  <!-- 图片画廊 -->
+  <view class="gallery">
+    <swiper class="g-swiper" bindchange="onImageChange" indicator-dots="{{false}}">
+      <swiper-item wx:for="{{car.images}}" wx:key="*this">
+        <image class="g-img" src="{{item}}" mode="aspectFill"></image>
+      </swiper-item>
+    </swiper>
+    <view class="g-counter">{{current + 1}} / {{total}}</view>
+    <view class="g-download" bindtap="onDownload">
+      <view class="ic ic-download-w" style="width:28rpx;height:28rpx;"></view>
+      <text>保存图片</text>
     </view>
-    <view class="car-id">车源编号：{{car.id}}</view>
   </view>
 
-  <view class="card">
-    <view class="title">{{car.title}}</view>
+  <!-- 价格 + 标题 -->
+  <view class="card price-card">
+    <view class="price-main">
+      <text class="price-num">{{car.price}}</text>
+      <text class="price-unit">万</text>
+      <text class="price-old" wx:if="{{car.originalPrice}}">新车指导 ¥{{car.originalPrice}}万</text>
+    </view>
+    <view class="car-title">{{car.title}}</view>
     <view class="tags">
-      <text class="tag tag-warning" wx:if="{{car.tags.indexOf('出险记录') > -1}}">出险记录</text>
-      <text class="tag tag-info">{{car.fuel}}</text>
-      <text class="tag" wx:for="{{car.tags}}" wx:for-item="tag" wx:key="*this" wx:if="{{tag !== '出险记录'}}">{{tag}}</text>
+      <text class="tag tag-fuel">{{car.fuel}}</text>
+      <text class="tag {{t.cls}}" wx:for="{{tagList}}" wx:for-item="t" wx:key="text">{{t.text}}</text>
     </view>
-    <view class="publish-time">发布：{{car.publishTime}}</view>
+    <view class="sub-meta">
+      <text>车源编号 {{car.id}}</text>
+      <text class="dot">·</text>
+      <text>发布于 {{car.publishTime}}</text>
+    </view>
   </view>
 
+  <!-- 关键参数 -->
+  <view class="card key-card">
+    <view class="key-item">
+      <view class="key-val">{{car.listedYear}}-{{car.listedMonth}}月</view>
+      <view class="key-label">上牌时间</view>
+    </view>
+    <view class="key-item">
+      <view class="key-val">{{car.mileage}}万</view>
+      <view class="key-label">表显里程</view>
+    </view>
+    <view class="key-item">
+      <view class="key-val">{{car.color}}</view>
+      <view class="key-label">外观颜色</view>
+    </view>
+  </view>
+
+  <!-- 车辆档案 -->
   <view class="card">
-    <view class="card-title">车辆信息</view>
-    <view class="highlight-info">
-      <view class="info-item">
-        <view class="info-value">{{car.year}}-{{car.month}}</view>
-        <view class="info-label">上牌时间</view>
-      </view>
-      <view class="info-item">
-        <view class="info-value">{{car.mileage}}</view>
-        <view class="info-label">表显里程</view>
-      </view>
-      <view class="info-item">
-        <view class="info-value">{{car.color}}</view>
-        <view class="info-label">外观颜色</view>
-      </view>
-    </view>
+    <view class="card-title">车辆档案</view>
     <view class="info-grid">
-      <view class="grid-item">
-        <view class="label">排量</view>
-        <view class="value">{{car.displacement}}</view>
-      </view>
-      <view class="grid-item">
-        <view class="label">变速箱</view>
-        <view class="value">{{car.transmission}}</view>
-      </view>
-      <view class="grid-item">
-        <view class="label">排量标准</view>
-        <view class="value">{{car.emissionStandard}}</view>
-      </view>
-      <view class="grid-item">
-        <view class="label">厂家类型</view>
-        <view class="value">{{car.manufacturer}}</view>
-      </view>
-      <view class="grid-item">
-        <view class="label">车辆类型</view>
-        <view class="value">{{car.vehicleType}}</view>
-      </view>
-      <view class="grid-item">
-        <view class="label">能源类型</view>
-        <view class="value">{{car.energyType}}</view>
-      </view>
+      <view class="info-row"><text class="k">排量</text><text class="v">{{car.displacement}}</text></view>
+      <view class="info-row"><text class="k">变速箱</text><text class="v">{{car.transmission}}</text></view>
+      <view class="info-row"><text class="k">排放标准</text><text class="v">{{car.emission}}</text></view>
+      <view class="info-row"><text class="k">座位数</text><text class="v">{{car.seats}}</text></view>
+      <view class="info-row"><text class="k">驱动方式</text><text class="v">{{car.drive}}</text></view>
+      <view class="info-row"><text class="k">车身结构</text><text class="v">{{car.structure}}</text></view>
     </view>
-    <view class="more-btn" bindtap="onMoreParams">查看更多参数</view>
+
+    <view class="card-title" style="margin-top:24rpx;">核心配置</view>
+    <view class="tags">
+      <text class="tag" wx:for="{{car.features}}" wx:key="*this">{{item}}</text>
+    </view>
   </view>
 
+  <!-- 车况检测 -->
+  <view class="card report-card">
+    <view class="report-score">
+      <view class="score-num">{{car.report.score}}</view>
+      <view class="score-label">综合车况评分</view>
+    </view>
+    <view class="report-checks">
+      <view class="check-item"><view class="ic ic-check" style="width:28rpx;height:28rpx;"></view><text>无重大事故</text></view>
+      <view class="check-item"><view class="ic ic-check" style="width:28rpx;height:28rpx;"></view><text>无泡水</text></view>
+      <view class="check-item"><view class="ic ic-check" style="width:28rpx;height:28rpx;"></view><text>无火烧</text></view>
+    </view>
+  </view>
+
+  <!-- 卖家 -->
+  <view class="card seller-card">
+    <image class="seller-avatar" src="{{car.seller.avatar}}" mode="aspectFill"></image>
+    <view class="seller-info">
+      <view class="seller-name">{{car.seller.name}}
+        <text class="seller-type">{{car.seller.type}}</text>
+      </view>
+      <view class="seller-loc"><view class="ic ic-location" style="width:22rpx;height:22rpx;"></view>{{car.seller.location}}</view>
+    </view>
+    <view class="seller-phone">{{car.seller.phone}}</view>
+  </view>
+
+  <view style="height:180rpx;"></view>
+
+  <!-- 底部操作栏 -->
   <view class="bottom-bar">
-    <view class="call-btn" bindtap="onCall">电话联系</view>
+    <view class="bar-ic" bindtap="onCollect">
+      <view class="ic {{collected ? 'ic-star-fill' : 'ic-star'}}" style="width:40rpx;height:40rpx;"></view>
+      <text>收藏</text>
+    </view>
+    <view class="bar-ic" bindtap="onShare">
+      <view class="ic ic-share" style="width:40rpx;height:40rpx;"></view>
+      <text>分享</text>
+    </view>
+    <view class="call-btn" bindtap="onCall">
+      <view class="ic ic-phone-w" style="width:32rpx;height:32rpx;"></view>
+      <text>电话联系</text>
+    </view>
   </view>
 </view>

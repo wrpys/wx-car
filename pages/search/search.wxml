@@ -1,28 +1,56 @@
 <view class="page">
-  <view class="search-header">
-    <input 
-      class="search-input" 
-      placeholder="请输入关键字"
-      value="{{keyword}}"
-      bindinput="onInput"
-      bindconfirm="onSearch"
-    />
-    <view class="search-btn" bindtap="onSearch">搜索</view>
+  <!-- 搜索输入 -->
+  <view class="search-head">
+    <view class="s-input-wrap">
+      <view class="ic ic-search" style="width:30rpx;height:30rpx;"></view>
+      <input
+        class="s-input"
+        placeholder="搜索品牌、车型或关键词"
+        placeholder-class="ph"
+        value="{{keyword}}"
+        bindinput="onInput"
+        bindconfirm="onSearch"
+        focus
+      />
+    </view>
+    <view class="s-btn" bindtap="onSearch">搜索</view>
   </view>
 
-  <view class="history-section" wx:if="{{history.length > 0}}">
-    <view class="history-header">
-      <text class="history-title">历史记录</text>
-      <text class="clear-btn" bindtap="onClearHistory">🗑</text>
+  <!-- 历史记录 -->
+  <view class="block">
+    <view class="block-head">
+      <text class="block-title">历史记录</text>
+      <view class="ic ic-close" style="width:32rpx;height:32rpx;" bindtap="onClear" wx:if="{{history.length}}"></view>
     </view>
-    <view class="history-list">
-      <view class="history-item" wx:for="{{history}}" wx:key="*this" bindtap="onHistoryTap" data-keyword="{{item}}">
-        {{item}}
+    <scroll-view scroll-x class="chips" wx:if="{{history.length}}" enhanced show-scrollbar="{{false}}">
+      <view
+        class="chip"
+        wx:for="{{history}}"
+        wx:key="*this"
+        bindtap="onChip"
+        data-word="{{item}}"
+      >{{item}}</view>
+    </scroll-view>
+    <view class="empty" wx:else>暂无搜索历史</view>
+  </view>
+
+  <!-- 热门搜索 -->
+  <view class="block">
+    <view class="block-head">
+      <text class="block-title">热门搜索</text>
+    </view>
+    <view class="hot-grid">
+      <view
+        class="hot-item"
+        wx:for="{{hot}}"
+        wx:key="word"
+        bindtap="onChip"
+        data-word="{{item.word}}"
+      >
+        <text class="hot-rank" style="color:{{index < 3 ? '#FF7A29' : '#9AA0A6'}};">{{index + 1}}</text>
+        <text class="hot-word">{{item.word}}</text>
+        <text class="hot-heat">{{item.heat}}</text>
       </view>
     </view>
-  </view>
-
-  <view class="empty" wx:else>
-    <text>暂无历史记录</text>
   </view>
 </view>

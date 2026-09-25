@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>二手车买卖小程序 · 高保真原型 v2</title>
+<style>
+  :root{
+    --primary:#FFB800; --primary-dark:#F0A800; --primary-light:#FFF6DD;
+    --price:#E53935; --text-1:#1A1A1A; --text-2:#666; --text-3:#9AA0A6;
+    --bg:#F4F5F7; --card:#fff; --border:#EEF0F2;
+    --green:#2BA471; --green-bg:#E8F6EF; --orange:#FF7A29; --orange-bg:#FFF1E6;
+    --blue:#3D7FFF; --blue-bg:#EAF2FF;
+    --r-sm:8px; --r-md:14px; --r-lg:20px; --r-pill:999px;
+    --shadow-card:0 2px 10px rgba(0,0,0,.05);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:"PingFang SC",-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;
+    background:#E9EAEE;color:var(--text-1);padding:48px 24px;-webkit-font-smoothing:antialiased;}
+  .doc-head{max-width:1280px;margin:0 auto 40px;}
+  .doc-head h1{font-size:26px;font-weight:700;}
+  .doc-head p{color:var(--text-2);font-size:14px;margin-top:8px;line-height:1.6;}
+  .doc-head .tags{margin-top:14px;}
+  .doc-head .tags span{display:inline-block;background:#fff;border:1px solid var(--border);
+    color:var(--text-2);font-size:12px;padding:4px 12px;border-radius:999px;margin-right:8px;}
+  .gallery{max-width:1280px;margin:0 auto;display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:40px;}
+
+  .phone{width:300px;height:640px;background:#000;border-radius:38px;padding:10px;
+    box-shadow:0 24px 60px rgba(0,0,0,.22);margin:0 auto;position:relative;}
+  .notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:110px;height:22px;
+    background:#000;border-radius:0 0 14px 14px;z-index:20;}
+  .screen{width:100%;height:100%;background:var(--bg);border-radius:30px;overflow:hidden;
+    position:relative;display:flex;flex-direction:column;}
+  .screen .cap{position:absolute;bottom:-26px;left:0;right:0;text-align:center;
+    font-size:13px;color:var(--text-2);font-weight:600;}
+  .statusbar{height:36px;display:flex;align-items:flex-end;justify-content:space-between;
+    padding:0 18px 6px;font-size:11px;font-weight:600;background:var(--card);}
+  .nav{height:44px;display:flex;align-items:center;justify-content:center;background:var(--card);
+    font-size:16px;font-weight:600;position:relative;border-bottom:1px solid var(--border);}
+  .nav .back{position:absolute;left:14px;color:var(--text-1);}
+  .content{flex:1;overflow:hidden;position:relative;}
+
+  .ic{width:18px;height:18px;display:inline-block;vertical-align:middle;color:var(--text-1);}
+  .ic use{stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+  /* ---- 通用组件 ---- */
+  .search-card{display:flex;align-items:center;margin:14px 16px;padding:7px 9px 7px 14px;
+    background:#fff;border-radius:999px;box-shadow:var(--shadow-card);}
+  .location{display:flex;align-items:center;flex-shrink:0;white-space:nowrap;color:var(--primary-dark);font-weight:600;font-size:13px;}
+  .divider{width:1px;height:18px;background:var(--border);margin:0 8px;flex-shrink:0;}
+  .si{flex:1;min-width:0;font-size:13px;border:none;outline:none;color:var(--text-1);}
+  .sib{flex-shrink:0;white-space:nowrap;background:var(--primary);color:#1A1A1A;font-size:13px;font-weight:600;padding:7px 18px;border-radius:999px;}
+  .filter-bar{display:flex;background:#fff;margin:0 16px 6px;border-radius:var(--r-md);
+    box-shadow:var(--shadow-card);}
+  .fi{flex:1;display:flex;align-items:center;justify-content:center;height:42px;font-size:13px;color:var(--text-2);position:relative;}
+  .fi.active{color:var(--primary-dark);font-weight:600;}
+  .fi.active::after{content:'';position:absolute;bottom:3px;width:22px;height:3px;border-radius:3px;background:var(--primary);}
+
+  .car-list{padding:10px 16px 0;}
+  .car-card{display:flex;background:#fff;border-radius:var(--r-md);padding:13px;margin-bottom:13px;box-shadow:var(--shadow-card);}
+  .cover{position:relative;width:120px;height:90px;flex-shrink:0;margin-right:12px;border-radius:var(--r-sm);overflow:hidden;background:#eee;}
+  .cover img{width:100%;height:100%;object-fit:cover;}
+  .bu{position:absolute;top:0;left:0;background:var(--orange);color:#fff;font-size:10px;font-weight:600;padding:2px 7px;border-radius:0 var(--r-sm) var(--r-sm) 0;}
+  .bn{position:absolute;top:0;right:0;background:rgba(0,0,0,.55);color:#fff;font-size:10px;padding:2px 7px;border-radius:var(--r-sm) 0 0 var(--r-sm);}
+  .ci{flex:1;min-width:0;display:flex;flex-direction:column;}
+  .ct{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cm{font-size:11px;color:var(--text-3);margin:4px 0 6px;}
+  .tg{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;}
+  .tag{font-size:10px;background:#F2F3F5;color:var(--text-2);padding:2px 7px;border-radius:var(--r-sm);}
+  .tag.f{color:var(--blue);background:var(--blue-bg);}
+  .tag.g{color:var(--green);background:var(--green-bg);}
+  .pr{margin-top:auto;display:flex;align-items:baseline;}
+  .pnum{color:var(--price);font-weight:700;font-size:18px;}
+  .pu{color:var(--price);font-weight:600;font-size:11px;margin-left:1px;}
+  .pold{font-size:10px;color:var(--text-3);text-decoration:line-through;margin-left:7px;}
+  .fab{position:absolute;right:18px;bottom:90px;width:50px;height:50px;border-radius:50%;
+    background:var(--primary);display:flex;align-items:center;justify-content:center;color:#1A1A1A;
+    box-shadow:0 6px 16px rgba(255,184,0,.4);z-index:5;}
+
+  .card{background:#fff;border-radius:var(--r-md);padding:16px;margin:10px 14px;box-shadow:var(--shadow-card);}
+  .sec-t{font-size:15px;font-weight:600;margin:18px 16px 10px;}
+
+  /* 详情 */
+  .gallery2{position:relative;width:100%;height:230px;background:#222;}
+  .gallery2 img{width:100%;height:100%;object-fit:cover;}
+  .gc{position:absolute;right:14px;bottom:14px;background:rgba(0,0,0,.5);color:#fff;font-size:11px;padding:3px 10px;border-radius:999px;}
+  .gd{position:absolute;left:14px;bottom:14px;display:flex;align-items:center;gap:5px;background:rgba(0,0,0,.5);color:#fff;font-size:11px;padding:5px 11px;border-radius:999px;}
+  .pc{margin-top:-16px;position:relative;border-radius:var(--r-lg) var(--r-lg) 0 0;}
+  .pm{display:flex;align-items:baseline;}
+  .pt{font-size:15px;font-weight:600;line-height:1.4;margin:6px 0 8px;}
+  .sm{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-3);margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
+  .key{display:flex;background:var(--primary-light);}
+  .ki{flex:1;text-align:center;position:relative;padding:4px 0;}
+  .ki::after{content:'';position:absolute;right:0;top:8px;bottom:8px;width:1px;background:rgba(255,184,0,.3);}
+  .ki:last-child::after{display:none;}
+  .kv{font-size:14px;font-weight:600;}
+  .kl{font-size:11px;color:var(--text-2);margin-top:4px;}
+  .ct2{font-size:14px;font-weight:600;margin-bottom:10px;}
+  .ig{display:flex;flex-wrap:wrap;}
+  .ir{width:50%;display:flex;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);}
+  .ir .k{width:64px;color:var(--text-3);font-size:12px;}
+  .ir .v{font-size:12px;}
+  .rep{display:flex;align-items:center;}
+  .rs{width:78px;text-align:center;border-right:1px solid var(--border);padding-right:12px;}
+  .rsn{font-size:26px;font-weight:700;color:var(--green);line-height:1;}
+  .rsl{font-size:10px;color:var(--text-3);margin-top:4px;}
+  .rc{flex:1;padding-left:14px;display:flex;flex-direction:column;gap:8px;font-size:12px;}
+  .sc{display:flex;align-items:center;}
+  .sc img{width:44px;height:44px;border-radius:50%;}
+  .si2{flex:1;margin-left:10px;}
+  .sn{font-size:14px;font-weight:600;display:flex;align-items:center;}
+  .snt{font-size:10px;color:var(--primary-dark);background:var(--primary-light);padding:1px 7px;border-radius:999px;margin-left:6px;font-weight:400;}
+  .sl{display:flex;align-items:center;gap:3px;font-size:11px;color:var(--text-3);margin-top:4px;}
+  .sph{margin-left:auto;font-size:13px;font-weight:600;color:var(--primary-dark);}
+  .bbar{position:absolute;left:0;right:0;bottom:0;background:#fff;display:flex;align-items:center;
+    padding:10px 16px;box-shadow:0 -2px 12px rgba(0,0,0,.05);}
+  .bic{width:54px;display:flex;flex-direction:column;align-items:center;font-size:10px;color:var(--text-2);}
+  .cbtn{flex:1;margin-left:14px;height:42px;border-radius:999px;background:var(--primary);color:#1A1A1A;
+    font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;}
+
+  /* 搜索页 */
+  .sh{display:flex;align-items:center;padding:14px 16px;background:#fff;}
+  .siw{flex:1;display:flex;align-items:center;background:#F2F3F5;border-radius:999px;padding:8px 14px;}
+  .sbtn{margin-left:12px;flex-shrink:0;white-space:nowrap;color:var(--primary-dark);font-size:14px;font-weight:600;}
+  .block{background:#fff;margin-top:12px;padding:18px 16px;}
+  .bh{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .bh t{font-size:14px;font-weight:600;}
+  .chips{display:flex;gap:8px;overflow:hidden;}
+  .chip{background:#F2F3F5;color:var(--text-2);font-size:12px;padding:7px 14px;border-radius:999px;white-space:nowrap;}
+  .hot{display:flex;flex-wrap:wrap;}
+  .hi{width:50%;display:flex;align-items:center;padding:8px 0;}
+  .hr{width:18px;font-size:13px;font-weight:700;font-style:italic;}
+  .hw{flex:1;font-size:13px;}
+  .hh{font-size:11px;color:var(--text-3);}
+
+  /* 批发 */
+  .banner{margin:14px 16px;padding:22px 20px;border-radius:var(--r-lg);
+    background:linear-gradient(135deg,#FFC93C,#FFB800);box-shadow:0 6px 16px rgba(255,184,0,.3);}
+  .bt{font-size:18px;font-weight:700;color:#1A1A1A;}
+  .bs{font-size:12px;color:rgba(26,26,26,.7);margin-top:5px;}
+  .ws{display:flex;background:#fff;border-radius:var(--r-md);padding:13px;margin:0 16px 13px;box-shadow:var(--shadow-card);}
+  .stock{position:absolute;left:0;bottom:0;background:rgba(0,0,0,.6);color:#fff;font-size:10px;padding:2px 7px;border-radius:0 var(--r-sm) 0 0;}
+  .pl{font-size:11px;color:var(--text-3);margin-right:4px;}
+  .mb{font-size:10px;color:var(--primary-dark);background:var(--primary-light);padding:1px 7px;border-radius:999px;margin-left:7px;}
+
+  /* 服务 */
+  .hero{margin:14px 16px;padding:22px 20px 16px;border-radius:var(--r-lg);
+    background:linear-gradient(135deg,#FFC93C,#FFB800);box-shadow:0 6px 16px rgba(255,184,0,.3);}
+  .ht{font-size:18px;font-weight:700;}
+  .hs{font-size:12px;color:rgba(26,26,26,.7);margin-top:5px;}
+  .gua{display:flex;flex-wrap:wrap;margin-top:14px;}
+  .gu{display:flex;align-items:center;gap:3px;width:50%;font-size:12px;color:#1A1A1A;margin-bottom:6px;}
+  .svc-grid{display:flex;flex-wrap:wrap;padding:0 8px;}
+  .svc{width:33.33%;display:flex;flex-direction:column;align-items:center;padding:10px 4px 16px;}
+  .svci{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 4px 10px rgba(0,0,0,.08);}
+  .svcn{font-size:13px;font-weight:600;margin-top:9px;}
+  .svcd{font-size:10px;color:var(--text-3);margin-top:2px;}
+  .steps{display:flex;margin:0 16px;background:#fff;border-radius:var(--r-md);padding:18px 0;box-shadow:var(--shadow-card);}
+  .step{flex:1;display:flex;flex-direction:column;align-items:center;}
+  .snum{width:28px;height:28px;border-radius:50%;background:var(--primary-light);color:var(--primary-dark);font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;margin-bottom:7px;}
+  .stx{font-size:12px;color:var(--text-2);}
+
+  /* 我的 */
+  .profile{display:flex;align-items:center;padding:34px 24px 28px;background:linear-gradient(135deg,#FFC93C,#FFB800);}
+  .avatar{width:60px;height:60px;border-radius:50%;border:2px solid rgba(255,255,255,.6);background:#fff;}
+  .pi{margin-left:14px;}
+  .pn{font-size:19px;font-weight:700;}
+  .plv{display:inline-block;font-size:10px;color:#1A1A1A;background:rgba(255,255,255,.55);padding:1px 8px;border-radius:999px;margin-top:5px;}
+  .pp{font-size:12px;color:rgba(26,26,26,.7);margin-top:4px;}
+  .stats{margin:-16px 16px 0;position:relative;display:flex;padding:18px 0;}
+  .stat{flex:1;text-align:center;position:relative;}
+  .stat::after{content:'';position:absolute;right:0;top:6px;bottom:6px;width:1px;background:var(--border);}
+  .stat:last-child::after{display:none;}
+  .stn{font-size:20px;font-weight:700;}
+  .stl{font-size:11px;color:var(--text-3);margin-top:4px;}
+  .menu{margin-top:14px;padding:4px 16px;}
+  .mi{display:flex;align-items:center;padding:15px 0;border-bottom:1px solid var(--border);}
+  .mi:last-child{border-bottom:none;}
+  .mn{flex:1;font-size:14px;}
+  .md{font-size:12px;color:var(--text-3);margin-right:8px;}
+  .logout{margin:22px 16px;text-align:center;font-size:14px;color:var(--text-2);background:#fff;padding:14px;border-radius:var(--r-md);box-shadow:var(--shadow-card);}
+
+  /* 发布 */
+  .form2{padding:4px 16px;}
+  .fld{display:flex;align-items:center;padding:15px 0;border-bottom:1px solid var(--border);}
+  .fl{width:80px;font-size:14px;flex-shrink:0;}
+  .fin{flex:1;font-size:14px;border:none;outline:none;color:var(--text-1);background:transparent;}
+  .fpr{display:flex;align-items:center;}
+  .fs{font-size:13px;color:var(--text-3);margin-left:6px;}
+  .ptx{display:flex;align-items:center;justify-content:space-between;font-size:14px;}
+  .ta{width:100%;height:90px;font-size:13px;margin-top:8px;background:#F7F8FA;border-radius:var(--r-sm);padding:10px;}
+  .imgrid{display:flex;flex-wrap:wrap;margin-top:8px;}
+  .imgbox{width:80px;height:80px;border-radius:var(--r-sm);margin:0 8px 8px 0;background:#F2F3F5;
+    border:1px dashed #C8CCD4;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text-3);}
+  .submit{margin:22px 16px 0;height:46px;border-radius:999px;background:var(--primary);color:#1A1A1A;
+    font-size:16px;font-weight:600;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(255,184,0,.35);}
+
+  .list-end{text-align:center;color:var(--text-3);font-size:11px;padding:14px 0 6px;}
+
+  /* 底部 TabBar（仅 4 个主 Tab 屏显示） */
+  .tabbar{flex-shrink:0;height:56px;display:flex;background:#fff;box-shadow:0 -2px 16px rgba(0,0,0,.04);z-index:30;}
+  .tb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--text-3);font-size:11px;}
+  .tb.active{color:var(--primary);font-weight:600;}
+  .tb .ic{width:22px;height:22px;}
+  .tb .ic use{stroke-width:1.8;}
+</style>
+</head>
+<body>
+
+<!-- ===== 图标定义（与小程序 data-URI SVG 同源） ===== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <g id="g" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+      <symbol id="i-loc" viewBox="0 0 24 24"><path d="M12 21s-7-7.5-7-12a7 7 0 0 1 14 0c0 4.5-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></symbol>
+      <symbol id="i-down" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></symbol>
+      <symbol id="i-right" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></symbol>
+      <symbol id="i-left" viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+      <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.6a16 16 0 0 0 6 6l1.1-1.1a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></symbol>
+      <symbol id="i-star" viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9.3 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9.3 9 9"/></symbol>
+      <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></symbol>
+      <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></symbol>
+      <symbol id="i-camera" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+      <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5"/><path d="M9.5 21v-6h5v6"/></symbol>
+      <symbol id="i-wholesale" viewBox="0 0 24 24"><path d="M2 7h11v8H2z"/><path d="M13 10h4l3 3v2h-7z"/><circle cx="6" cy="17" r="1.7"/><circle cx="16.5" cy="17" r="1.7"/></symbol>
+      <symbol id="i-service" viewBox="0 0 24 24"><path d="M12 3l7 2.6v4.8c0 4.3-2.9 7.8-7 9.6-4.1-1.8-7-5.3-7-9.6V5.6L12 3z"/><path d="M11 11.2l-3.2-3.2 1.1-1.1 2.1 2.1 3.7-3.7 1.1 1.1-4.8 4.8z"/></symbol>
+      <symbol id="i-mine" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M5 20a7 7 0 0 1 14 0"/></symbol>
+      <symbol id="i-evaluate" viewBox="0 0 24 24"><path d="M12 14l4-4"/><circle cx="12" cy="14" r="8"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="4" y1="14" x2="2" y2="14"/><line x1="20" y1="14" x2="22" y2="14"/></symbol>
+      <symbol id="i-transfer" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><polyline points="9 15 12 12 15 15"/><line x1="12" y1="12" x2="12" y2="19"/></symbol>
+      <symbol id="i-finance" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10"/><path d="M15 10a3 3 0 0 0-3-3"/><path d="M9 14a3 3 0 0 0 3 3"/></symbol>
+      <symbol id="i-warranty" viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/><polyline points="9 12 11 14 15 10"/></symbol>
+      <symbol id="i-inspect" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+      <symbol id="i-trade" viewBox="0 0 24 24"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0l-7.2-7.2A2 2 0 0 1 3 12V5a2 2 0 0 1 2-2h7a2 2 0 0 1 1.4.6l7.2 7.2a2 2 0 0 1 0 2.6z"/><circle cx="7.5" cy="7.5" r="1.5"/></symbol>
+    </g>
+  </defs>
+</svg>
+
+<div class="doc-head">
+  <h1>二手车买卖小程序 · 高保真原型 v2</h1>
+  <p>设计基调：明黄主色 #FFB800 + 白底卡片 + 红价签 #E53935 + 圆角轻量化。下方为 8 个核心界面的可预览原型，与小程序 WXSS 实现完全一致。</p>
+  <div class="tags"><span>明黄主色</span><span>白卡轻阴影</span><span>红色价签</span><span>SVG 图标</span><span>统一车源卡片</span><span>自定义 TabBar</span></div>
+</div>
+
+<div class="gallery">
+
+  <!-- 1. 首页 -->
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen">
+      <div class="statusbar"><span>9:41</span><span>5G · 100%</span></div>
+      <div class="nav">二手车</div>
+      <div class="content">
+        <div class="search-card">
+          <span class="location"><svg class="ic" style="color:var(--primary)"><use href="#i-loc"/></svg>福州<svg class="ic" style="width:10px;height:10px;color:var(--text-3)"><use href="#i-down"/></svg></span>
+          <span class="divider"></span>
+          <input class="si" placeholder="搜索品牌、车型或关键词"/>
+          <span class="sib">搜索</span>
+        </div>
+        <div class="filter-bar">
+          <div class="fi active">默认排序<svg class="ic" style="width:9px;height:9px"><use href="#i-down"/></svg></div>
+          <div class="fi">品牌<svg class="ic" style="width:9px;height:9px"><use href="#i-down"/></svg></div>
+          <div class="fi">价格<svg class="ic" style="width:9px;height:9px"><use href="#i-down"/></svg></div>
+          <div class="fi">筛选<svg class="ic" style="width:11px;height:11px"><use href="#i-service"/></svg></div>
+        </div>
+        <div class="car-list">
+          <div class="car-card">
+            <div class="cover"><img src="https://picsum.photos/seed/hanlanda/300/220"/><span class="bu">急卖</span></div>
+            <div class="ci">
+              <div class="ct">丰田 汉兰达 2018款 2.0T 四驱豪华版</div>
+              <div class="cm">2018年 · 6.8万公里 · 福州</div>
+              <div class="tg"><span class="tag f">汽油</span><span class="tag g">一手车</span><span class="tag">4S店保养</span></div>
+              <div class="pr"><span class="pnum">13.8</span><span class="pu">万</span><span class="pold">¥15.6万</span></div>
+            </div>
+          </div>
+          <div class="car-card">
+            <div class="cover"><img src="https://picsum.photos/seed/model3/300/220"/><span class="bn">新上架</span></div>
+            <div class="ci">
+              <div class="ct">特斯拉 Model 3 2021款 标准续航</div>
+              <div class="cm">2021年 · 3.1万公里 · 福州</div>
+              <div class="tg"><span class="tag f">纯电</span><span class="tag g">准新</span></div>
+              <div class="pr"><span class="pnum">16.5</span><span class="pu">万</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="list-end">已经到底啦 ~</div>
+        <div class="fab"><svg class="ic" style="width:22px;height:22px;color:#1A1A1A"><use href="#i-plus"/></svg></div>
+      </div>
+        <div class="tabbar">
+          <div class="tb active"><svg class="ic"><use href="#i-home"/></svg>首页</div>
+          <div class="tb"><svg class="ic"><use href="#i-wholesale"/></svg>批发车</div>
+          <div class="tb"><svg class="ic"><use href="#i-service"/></svg>服务</div>
+          <div class="tb"><svg class="ic"><use href="#i-mine"/></svg>我的</div>
+        </div>
+    </div>
+    <div class="cap">首页 · 浏览 / 筛选 / 搜索</div>
+  </div>
+
+  <!-- 2. 车辆详情 -->
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen">
+      <div class="statusbar"><span>9:41</span><span>5G · 100%</span></div>
+      <div class="nav"><span class="back"><svg class="ic" style="width:20px;height:20px"><use href="#i-left"/></svg></span>车辆详情</div>
+      <div class="content">
+        <div class="gallery2"><img src="https://picsum.photos/seed/hanlanda-1/400/300"/>
+          <div class="gd"><svg class="ic" style="width:14px;height:14px;color:#fff"><use href="#i-download"/></svg>保存图片</div>
+          <div class="gc">1 / 6</div></div>
+        <div class="card pc">
+          <div class="pm"><span class="pnum">13.8</span><span class="pu">万</span><span class="pold">新车指导 ¥15.6万</span></div>
+          <div class="pt">丰田 汉兰达 2018款 2.0T 四驱豪华版 7座</div>
+          <div class="tg"><span class="tag f">汽油</span><span class="tag g">一手车</span><span class="tag">4S店保养</span></div>
+          <div class="sm"><span>车源编号 C20489</span><span>·</span><span>发布于 2026-09-20</span></div>
+        </div>
+        <div class="card key">
+          <div class="ki"><div class="kv">2018-5月</div><div class="kl">上牌时间</div></div>
+          <div class="ki"><div class="kv">6.8万</div><div class="kl">表显里程</div></div>
+          <div class="ki"><div class="kv">珍珠白</div><div class="kl">外观颜色</div></div>
+        </div>
+        <div class="card">
+          <div class="ct2">车辆档案</div>
+          <div class="ig">
+            <div class="ir"><span class="k">排量</span><span class="v">2.0T</span></div>
+            <div class="ir"><span class="k">变速箱</span><span class="v">6挡手自一体</span></div>
+            <div class="ir"><span class="k">排放标准</span><span class="v">国V</span></div>
+            <div class="ir"><span class="k">座位数</span><span class="v">7座</span></div>
+          </div>
+        </div>
+        <div class="card rep">
+          <div class="rs"><div class="rsn">92</div><div class="rsl">综合车况评分</div></div>
+          <div class="rc">
+            <div class="gu" style="width:auto;color:var(--text-1)"><svg class="ic" style="width:14px;height:14px;color:var(--green)"><use href="#i-check"/></svg>无重大事故</div>
+            <div class="gu" style="width:auto;color:var(--text-1)"><svg class="ic" style="width:14px;height:14px;color:var(--green)"><use href="#i-check"/></svg>无泡水</div>
+            <div class="gu" style="width:auto;color:var(--text-1)"><svg class="ic" style="width:14px;height:14px;color:var(--green)"><use href="#i-check"/></svg>无火烧</div>
+          </div>
+        </div>
+        <div class="card sc">
+          <img src="https://picsum.photos/seed/seller1/80/80"/>
+          <div class="si2"><div class="sn">王女士<span class="snt">个人</span></div><div class="sl"><svg class="ic" style="width:11px;height:11px;color:var(--text-3)"><use href="#i-loc"/></svg>福州·仓山区</div></div>
+          <span class="sph">138****6688</span>
+        </div>
+        <div class="bbar">
+          <div class="bic" style="color:#1A1A1A"><svg class="ic" style="width:20px;height:20px"><use href="#i-star"/></svg>收藏</div>
+          <div class="bic" style="color:#1A1A1A"><svg class="ic" style="width:20px;height:20px"><use href="#i-share"/></svg>分享</div>
+          <div class="cbtn"><svg class="ic" style="width:16px;height:16px;color:#1A1A1A"><use href="#i-phone"/></svg>电话联系</div>
+        </div>
+      </div>
+    </div>
+    <div class="cap">车辆详情 · 画廊 / 参数 / 车况</div>
+  </div>
+
+  <!-- 3. 搜索 -->
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen">
+      <div class="statusbar"><span>9:41</span><span>5G · 100%</span></div>
+      <div class="nav"><span class="back"><svg class="ic" style="width:20px;height:20px"><use href="#i-left"/></svg></span>搜索</div>
+      <div class="content">
+        <div class="sh">
+          <div class="siw"><svg class="ic" style="color:var(--text-3)"><use href="#i-search"/></svg><input class="si" placeholder="搜索品牌、车型或关键词" style="margin-left:6px"/></div>
+          <span class="sbtn">搜索</span>
+        </div>
+        <div class="block">
+          <div class="bh"><t>历史记录</t><svg class="ic" style="width:16px;height:16px;color:var(--text-3)"><use href="#i-close"/></svg></div>
+          <div class="chips">
+            <span class="chip">汉兰达 四驱</span><span class="chip">Model 3</span><span class="chip">雅阁 混动</span><span class="chip">宝马 X3</span>
+          </div>
+        </div>
+        <div class="block">
+          <div class="bh"><t>热门搜索</t></div>
+          <div class="hot">
+            <div class="hi"><span class="hr" style="color:var(--orange)">1</span><span class="hw">汉兰达</span><span class="hh">9821</span></div>
+            <div class="hi"><span class="hr" style="color:var(--orange)">2</span><span class="hw">Model 3</span><span class="hh">8742</span></div>
+            <div class="hi"><span class="hr" style="color:var(--orange)">3</span><span class="hw">雅阁混动</span><span class="hh">7654</span></div>
+            <div class="hi"><span class="hr" style="color:var(--text-3)">4</span><span class="hw">宝马X3</span><span class="hh">6510</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cap">搜索页 · 历史 chips / 热门</div>
+  </div>
+
+  <!-- 4. 搜索结果 -->
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen">
+      <div class="statusbar"><span>9:41</span><span>5G · 100%</span></div>
+      <div class="nav"><span class="back"><svg class="ic" style="width:20px;height:20px"><use href="#i-left"/></svg></span>搜索结果</div>
+      <div class="content">
+        <div style="padding:14px 16px;font-size:13px;color:var(--text-2)">共找到 <b style="color:var(--price);font-size:15px">8</b> 辆「汉兰达」</div>
+        <div class="car-list">
+          <div class="car-card">
+            <div class="cover"><img src="https://picsum.photos/seed/hanlanda/300/220"/><span class="bu">急卖</span></div>
+            <div class="ci"><div class="ct">丰田 汉兰达 2018款 2.0T 四驱豪华版</div><div class="cm">2018年 · 6.8万公里 · 福州</div>
+              <div class="tg"><span class="tag f">汽油</span><span class="tag g">一手车</span></div><div class="pr"><span class="pnum">13.8</span><span class="pu">万</span></div></div>
+          </div>
+          <div class="car-card">
+            <div class="cover"><img src="https://picsum.photos/seed/hanlanda2/300/220"/></div>
+            <div class="ci"><div class="ct">丰田 汉兰达 2015款 2.0T 两驱精英</div><div class="cm">2015年 · 11.2万公里 · 厦门</div>
+              <div class="tg"><span class="tag f">汽油</span></div><div class="pr"><span class="pnum">9.98</span><span class="pu">万</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cap">搜索结果 · 同款车源卡片</div>
+  </div>
+
+  <!-- 5. 批发车 -->
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen">
+      <div class="statusbar"><span>9:41</span><span>5G · 100%</span></div>
+      <div class="nav">批发车</div>
+      <div class="content">
+        <div class="banner"><div class="bt">批发车源 · 整车直供</div><div class="bs">一手车源 · 批量更优惠 · 支持按揭</div></div>
+        <div class="ws">
+          <div class="cover" style="width:120px;height:90px"><img src="https://picsum.photos/seed/wh1/300/220"/><span class="stock">库存 12 台</span></div>
+          <div class="ci"><div class="ct">大众 朗逸 2021款 1.5L 自动</div><div class="cm">2021年 · 3.5万公里 · 福州</div>
+            <div class="tg"><span class="tag">4S店直供</span></div><div class="pr"><span class="pl">批发价</span><span class="pnum">7.2</span><span class="pu">万</span><span class="mb">起批 2 台</span></div></div>
+        </div>
+        <div class="ws">
+          <div class="cover" style="width:120px;height:90px"><img src="https://picsum.photos/seed/wh2/300/220"/><span class="stock">库存 20 台</span></div>
+          <div class="ci"><div class="ct">吉利 帝豪 2020款 1.5L CVT</div><div class="cm">2020年 · 4.8万公里 · 福州</div>
+            <div class="tg"><span class="tag">整车批发</span></div><div class="pr"><span class="pl">批发价</span><span class="pnum">4.98</span><span class="pu">万</span><span class="mb">起批 3 台</span></div></div>
+        </div>
+      </div>
+        <div class="tabbar">
+          <div class="tb"><svg class="ic"><use href="#i-home"/></svg>首页</div>
+          <div class="tb active"><svg class="ic"><use href="#i-wholesale"/></svg>批发车</div>
+          <div class="tb"><svg class="ic"><use href="#i-service"/></svg>服务</div>
+          <div class="tb"><svg class="ic"><use href="#i-mine"/></svg>我的</div>
+        </div>
+    </div>
+    <div class="cap">批发车 · Tab</div>
+  </div>
+
+  <!-- 6. 服务 -->
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen">
+      <div class="statusbar"><span>9:41</span><span>5G · 100%</span></div>
+      <div class="nav">服务中心</div>
+      <div class="content">
+        <div class="hero"><div class="ht">售后无忧 · 全程守护</div><div class="hs">从看车到过户，专业团队为您保驾护航</div>
+          <div class="gua">
+            <div class="gu"><svg class="ic" style="width:13px;height:13px;color:var(--green)"><use href="#i-check"/></svg>真实车源</div>
+            <div class="gu"><svg class="ic" style="width:13px;height:13px;color:var(--green)"><use href="#i-check"/></svg>专业检测</div>
+            <div class="gu"><svg class="ic" style="width:13px;height:13px;color:var(--green)"><use href="#i-check"/></svg>资金担保</div>
+            <div class="gu"><svg class="ic" style="width:13px;height:13px;color:var(--green)"><use href="#i-check"/></svg>售后无忧</div>
+          </div>
+        </div>
+        <div class="sec-t" style="margin:16px 16px 8px">为您提供的服务</div>
+        <div class="svc-grid">
+          <div class="svc"><div class="svci" style="background:#FFB800"><svg class="ic" style="width:22px;height:22px;color:#fff"><use href="#i-evaluate"/></svg></div><div class="svcn">免费估价</div><div class="svcd">30秒估值</div></div>
+          <div class="svc"><div class="svci" style="background:#3D7FFF"><svg class="ic" style="width:22px;height:22px;color:#fff"><use href="#i-transfer"/></svg></div><div class="svcn">过户代办</div><div class="svcd">专人办理</div></div>
+          <div class="svc"><div class="svci" style="background:#2BA471"><svg class="ic" style="width:22px;height:22px;color:#fff"><use href="#i-finance"/></svg></div><div class="svcn">分期金融</div><div class="svcd">低息0首付</div></div>
+          <div class="svc"><div class="svci" style="background:#FF7A29"><svg class="ic" style="width:22px;height:22px;color:#fff"><use href="#i-warranty"/></svg></div><div class="svcn">延保质保</div><div class="svcd">全国联保</div></div>
+          <div class="svc"><div class="svci" style="background:#9B5CFF"><svg class="ic" style="width:22px;height:22px;color:#fff"><use href="#i-inspect"/></svg></div><div class="svcn">上门检测</div><div class="svcd">评估师</div></div>
+          <div class="svc"><div class="svci" style="background:#FF5C8A"><svg class="ic" style="width:22px;height:22px;color:#fff"><use href="#i-trade"/></svg></div><div class="svcn">寄售服务</div><div class="svcd">卖高价</div></div>
+        </div>
+        <div class="sec-t" style="margin:16px 16px 8px">交易流程</div>
+        <div class="steps">
+          <div class="step"><div class="snum">1</div><div class="stx">在线选车</div></div>
+          <div class="step"><div class="snum">2</div><div class="stx">预约看车</div></div>
+          <div class="step"><div class="snum">3</div><div class="stx">签约付款</div></div>
+          <div class="step"><div class="snum">4</div><div class="stx">过户交付</div></div>
+        </div>
+      </div>
+        <div class="tabbar">
+          <div class="tb"><svg class="ic"><use href="#i-home"/></svg>首页</div>
+          <div class="tb"><svg class="ic"><use href="#i-wholesale"/></svg>批发车</div>
+          <div class="tb active"><svg class="ic"><use href="#i-service"/></svg>服务</div>
+          <div class="tb"><svg class="ic"><use href="#i-mine"/></svg>我的</div>
+        </div>
+    </div>
+    <div class="cap">服务 · Tab</div>
+  </div>
+
+  <!-- 7. 我的 -->
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen">
+      <div class="statusbar"><span>9:41</span><span>5G · 100%</span></div>
+      <div class="nav">我的</div>
+      <div class="content">
+        <div class="profile">
+          <img class="avatar" src="https://picsum.photos/seed/me-avatar/120/120"/>
+          <div class="pi"><div class="pn">林先生</div><span class="plv">V3 认证车主</span><div class="pp">138****8866</div></div>
+        </div>
+        <div class="card stats">
+          <div class="stat"><div class="stn">3</div><div class="stl">在售车辆</div></div>
+          <div class="stat"><div class="stn">28</div><div class="stl">我的收藏</div></div>
+          <div class="stat"><div class="stn">156</div><div class="stl">浏览记录</div></div>
+        </div>
+        <div class="card menu">
+          <div class="mi"><span class="mn">我的订单</span><svg class="ic" style="color:var(--text-3)"><use href="#i-right"/></svg></div>
+          <div class="mi"><span class="mn">我的收藏</span><span class="md">28 条</span><svg class="ic" style="color:var(--text-3)"><use href="#i-right"/></svg></div>
+          <div class="mi"><span class="mn">我发布的车</span><span class="md">3 辆在售</span><svg class="ic" style="color:var(--text-3)"><use href="#i-right"/></svg></div>
+          <div class="mi"><span class="mn">我的估价</span><svg class="ic" style="color:var(--text-3)"><use href="#i-right"/></svg></div>
+          <div class="mi"><span class="mn">客服中心</span><svg class="ic" style="color:var(--text-3)"><use href="#i-right"/></svg></div>
+          <div class="mi"><span class="mn">设置</span><svg class="ic" style="color:var(--text-3)"><use href="#i-right"/></svg></div>
+        </div>
+        <div class="logout">退出登录</div>
+      </div>
+        <div class="tabbar">
+          <div class="tb"><svg class="ic"><use href="#i-home"/></svg>首页</div>
+          <div class="tb"><svg class="ic"><use href="#i-wholesale"/></svg>批发车</div>
+          <div class="tb"><svg class="ic"><use href="#i-service"/></svg>服务</div>
+          <div class="tb active"><svg class="ic"><use href="#i-mine"/></svg>我的</div>
+        </div>
+    </div>
+    <div class="cap">我的 · Tab</div>
+  </div>
+
+  <!-- 8. 发布车源 -->
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen">
+      <div class="statusbar"><span>9:41</span><span>5G · 100%</span></div>
+      <div class="nav"><span class="back"><svg class="ic" style="width:20px;height:20px"><use href="#i-left"/></svg></span>发布车源</div>
+      <div class="content">
+        <div class="card form2">
+          <div class="fld"><span class="fl">车辆标题</span><input class="fin" placeholder="如：汉兰达 2018款 2.0T"/></div>
+          <div class="fld"><span class="fl">品牌</span><div class="ptx" style="flex:1;color:var(--text-3)">请选择品牌<svg class="ic" style="color:var(--text-3)"><use href="#i-right"/></svg></div></div>
+          <div class="fld"><span class="fl">上牌年份</span><input class="fin" placeholder="如 2018"/></div>
+          <div class="fld"><span class="fl">表显里程</span><div class="fpr"><input class="fin" placeholder="如 6.8"/><span class="fs">万公里</span></div></div>
+          <div class="fld"><span class="fl">燃料类型</span><div class="ptx" style="flex:1;color:var(--text-3)">请选择燃料<svg class="ic" style="color:var(--text-3)"><use href="#i-right"/></svg></div></div>
+          <div class="fld"><span class="fl">所在地</span><div class="ptx" style="flex:1;color:var(--text-3)">请选择城市<svg class="ic" style="color:var(--text-3)"><use href="#i-right"/></svg></div></div>
+          <div class="fld"><span class="fl">期望售价</span><div class="fpr"><input class="fin" placeholder="如 13.8"/><span class="fs">万元</span></div></div>
+          <div class="fld" style="flex-direction:column;align-items:stretch"><span class="fl" style="margin-bottom:6px">车况描述</span><textarea class="ta" placeholder="补充车辆亮点、过户次数、保养情况等"></textarea></div>
+          <div class="fld" style="flex-direction:column;align-items:stretch"><span class="fl" style="margin-bottom:6px">车辆图片</span>
+            <div class="imgrid"><div class="imgbox"><svg class="ic" style="width:24px;height:24px;color:var(--text-3)"><use href="#i-camera"/></svg><span style="font-size:10px;margin-top:3px">0/6</span></div></div>
+          </div>
+        </div>
+        <div class="submit">提交发布</div>
+      </div>
+    </div>
+    <div class="cap">发布车源 · 表单</div>
+  </div>
+
+</div>
+</body>
+</html>

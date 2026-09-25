@@ -1,14 +1,43 @@
 <view class="page">
-  <view class="result-grid">
-    <view class="car-card" wx:for="{{results}}" wx:key="id" bindtap="onCarTap" data-id="{{item.id}}">
-      <image class="car-image" src="{{item.image}}" mode="aspectFill"></image>
-      <view class="car-title">{{item.title}}</view>
-      <view class="car-meta">{{item.year}}年 / {{item.mileage}} / {{item.city}}</view>
-      <view class="car-price">{{item.price}} 万</view>
+  <view class="result-bar">
+    <text wx:if="{{count > 0}}">共找到 <text class="count">{{count}}</text> 辆「{{keyword}}」</text>
+  </view>
+
+  <!-- 结果列表 -->
+  <view class="car-list" wx:if="{{count > 0}}">
+    <view
+      class="car-card"
+      wx:for="{{list}}"
+      wx:key="id"
+      bindtap="onCarTap"
+      data-id="{{item.id}}"
+    >
+      <view class="cover">
+        <image class="cover-img" src="{{item.cover}}" mode="aspectFill" lazy-load="true"></image>
+        <view class="badge-urgent" wx:if="{{item.urgent}}">急卖</view>
+        <view class="badge-new" wx:if="{{item.isNew}}">新上架</view>
+      </view>
+      <view class="info">
+        <view class="title">{{item.title}}</view>
+        <view class="meta">{{item.year}}年 · {{item.mileage}}万公里 · {{item.city}}</view>
+        <view class="tags">
+          <text class="tag tag-fuel">{{item.fuel}}</text>
+          <text class="tag {{t.cls}}" wx:for="{{item.tagList}}" wx:for-item="t" wx:key="text">{{t.text}}</text>
+        </view>
+        <view class="price-row">
+          <text class="price-num">{{item.price}}</text>
+          <text class="price-unit">万</text>
+          <text class="price-old" wx:if="{{item.originalPrice}}">新车指导 ¥{{item.originalPrice}}万</text>
+        </view>
+      </view>
     </view>
   </view>
 
-  <view class="empty" wx:if="{{results.length === 0}}">
-    <text>暂无搜索结果</text>
+  <!-- 空态 -->
+  <view class="empty" wx:else>
+    <view class="ic ic-search empty-icon"></view>
+    <view class="empty-title">没有找到「{{keyword}}」相关车源</view>
+    <view class="empty-desc">换个关键词，或清除筛选条件试试</view>
+    <view class="empty-btn" bindtap="onClear">返回搜索</view>
   </view>
 </view>
