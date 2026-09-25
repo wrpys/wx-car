@@ -16,7 +16,10 @@
   "compileType": "miniprogram",
   "simulatorPluginLibVersion": {},
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      { "type": "folder", "value": "rp" },
+      { "type": "folder", "value": "design-output" }
+    ],
     "include": []
   },
   "appid": "wxb60a521fc85a7092",
